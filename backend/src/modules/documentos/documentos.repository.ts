@@ -20,8 +20,8 @@ export const documentoRepository = {
     if (params.cnpj) conditions.push(eq(documentos.prestador_cnpj, params.cnpj))
     if (params.inicio) conditions.push(gte(documentos.data_emissao, params.inicio))
     if (params.fim) conditions.push(lte(documentos.data_emissao, params.fim))
-    if (params.data_inicio) conditions.push(gte(documentos.created_at, new Date(params.data_inicio)))
-    if (params.data_fim) conditions.push(lte(documentos.created_at, new Date(params.data_fim)))
+    if (params.data_inicio) conditions.push(gte(documentos.created_at, new Date(params.data_inicio).toISOString()))
+    if (params.data_fim) conditions.push(lte(documentos.created_at, new Date(params.data_fim).toISOString()))
     if (params.tem_pdf !== undefined) {
       const hasPdf = params.tem_pdf === 'true' || params.tem_pdf === '1'
       conditions.push(hasPdf ? isNotNull(documentos.pdf_blob) : isNull(documentos.pdf_blob))
@@ -53,7 +53,7 @@ export const documentoRepository = {
     const total = totalResult?.count ?? 0
 
     return {
-      documentos: docs.map((d: { chave_acesso: string; prestador_cnpj: string; nsu: string | null; xml_nfse: string | null; pdf_blob: Buffer | null; data_emissao: string | null; emissao_dh: string | null; created_at: Date }) => ({ ...d, tem_pdf: d.pdf_blob !== null, pdf_blob: undefined })),
+      documentos: docs.map((d: { chave_acesso: string; prestador_cnpj: string; nsu: string | null; xml_nfse: string | null; pdf_blob: Buffer | null; data_emissao: string | null; emissao_dh: string | null; created_at: string }) => ({ ...d, tem_pdf: d.pdf_blob !== null, pdf_blob: undefined })),
       total,
     }
   },

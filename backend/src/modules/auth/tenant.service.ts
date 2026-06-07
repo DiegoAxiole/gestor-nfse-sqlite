@@ -50,7 +50,7 @@ export const tenantService = {
 
   async atualizar(tenantId: number, usuarioId: number, data: Partial<Omit<TenantProfile, 'uuid' | 'tipo' | 'documento' | 'nome'>>) {
     db.update(tenants)
-      .set({ ...data, updated_at: new Date(), updated_by: usuarioId })
+      .set({ ...data, updated_at: new Date().toISOString(), updated_by: usuarioId })
       .where(eq(tenants.id, tenantId))
       .run()
     const [tenant] = await db.select().from(tenants).where(eq(tenants.id, tenantId)).limit(1)

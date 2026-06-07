@@ -24,7 +24,7 @@ export async function subscriptionMiddleware(req: Request, res: Response, next: 
       return
     }
     const ativo = sub.status === 'active' || sub.status === 'trialing' || sub.status === 'pending'
-    const valido = sub.periodo_fim > new Date()
+    const valido = new Date(sub.periodo_fim) > new Date()
     if (ativo && valido) {
       next()
       return

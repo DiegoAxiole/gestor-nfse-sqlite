@@ -32,7 +32,7 @@ export function criarRouterBilling(): Router {
           periodoFim.setDate(periodoFim.getDate() + diasExtra)
 
           await db.update(subscriptions)
-            .set({ status: 'active', periodo_fim: periodoFim, updated_at: new Date() })
+            .set({ status: 'active', periodo_fim: periodoFim.toISOString(), updated_at: new Date().toISOString() })
             .where(eq(subscriptions.id, sub.id))
         }
       }

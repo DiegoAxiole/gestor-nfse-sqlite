@@ -65,8 +65,8 @@ export const authService = {
       tenant_id: novoTenant.id,
       plano: 'trial',
       status: 'trialing',
-      trial_fim: trialFim,
-      periodo_fim: trialFim,
+      trial_fim: trialFim.toISOString(),
+      periodo_fim: trialFim.toISOString(),
     })
 
     const token = jwt.sign(

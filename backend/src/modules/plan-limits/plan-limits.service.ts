@@ -56,7 +56,7 @@ export const planLimitsService = {
     const rows = await db.select({ total: count() }).from(documentos)
       .where(and(
         eq(documentos.tenant_id, tenantId),
-        gte(documentos.created_at, new Date(new Date().getFullYear(), new Date().getMonth(), 1)),
+        gte(documentos.created_at, new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()),
       ))
     return rows[0]?.total ?? 0
   },

@@ -9,7 +9,7 @@ export type UsuarioPerfil = {
   email: string
   nome: string | null
   papel: string
-  created_at: Date
+  created_at: string
 }
 
 export const usuarioService = {

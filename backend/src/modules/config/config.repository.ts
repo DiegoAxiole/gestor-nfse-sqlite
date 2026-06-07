@@ -18,7 +18,7 @@ export const configRepository = {
 
     if (existing) {
       await db.update(configuracoes)
-        .set({ ...dados, atualizada_em: new Date() })
+        .set({ ...dados, atualizada_em: new Date().toISOString() })
         .where(eq(configuracoes.id, existing.id))
     } else {
       await db.insert(configuracoes).values({

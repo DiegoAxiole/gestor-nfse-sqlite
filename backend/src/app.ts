@@ -32,7 +32,7 @@ export async function createApp() {
   await db.update(backgroundTasks).set({
     status: 'error',
     erro_texto: 'Servidor reiniciado enquanto a task estava em execução',
-    atualizado_em: new Date(),
+    atualizado_em: new Date().toISOString(),
   }).where(sql`status IN ('processing', 'pending')`)
 
   await db.delete(backgroundTasks).where(and(

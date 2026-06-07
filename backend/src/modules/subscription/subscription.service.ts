@@ -10,13 +10,13 @@ export type SubscriptionData = {
   uuid: string
   plano: string
   status: string
-  trial_fim: Date
-  periodo_fim: Date
+  trial_fim: string
+  periodo_fim: string
   gateway_customer_id: string | null
   gateway_subscription_id: string | null
-  cancelado_em: Date | null
-  created_at: Date
-  updated_at: Date
+  cancelado_em: string | null
+  created_at: string
+  updated_at: string
 }
 
 export const subscriptionService = {
@@ -26,7 +26,7 @@ export const subscriptionService = {
     if (!rows[0]) throw new NotFoundError('Subscription', String(tenantId))
     const s = rows[0]
     const now = new Date()
-    const diffMs = s.periodo_fim.getTime() - now.getTime()
+    const diffMs = new Date(s.periodo_fim).getTime() - now.getTime()
     const diasRestantes = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)))
     return { ...s, diasRestantes }
   },
@@ -40,7 +40,7 @@ export const subscriptionService = {
     }
 
     db.update(subscriptions)
-      .set({ status: 'canceled', cancelado_em: new Date(), updated_at: new Date() })
+      .set({ status: 'canceled', cancelado_em: new Date().toISOString(), updated_at: new Date().toISOString() })
       .where(eq(subscriptions.tenant_id, tenantId))
       .run()
     const [updated] = await db.select().from(subscriptions).where(eq(subscriptions.tenant_id, tenantId)).limit(1)
@@ -79,11 +79,11 @@ export const subscriptionService = {
       .set({
         plano: data.plano,
         status: 'pending',
-        periodo_fim: periodoFim,
+        periodo_fim: periodoFim.toISOString(),
         asaas_customer_id: customerId,
         asaas_subscription_id: result.subscriptionId,
         cancelado_em: null,
-        updated_at: new Date(),
+        updated_at: new Date().toISOString(),
       })
       .where(eq(subscriptions.tenant_id, tenantId))
       .run()
