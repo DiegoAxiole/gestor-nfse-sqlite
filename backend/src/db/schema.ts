@@ -1,82 +1,82 @@
-import { pgTable, serial, varchar, text, integer, timestamp, boolean, customType, primaryKey, uuid } from 'drizzle-orm/pg-core'
+import { sqliteTable, integer, text, customType, primaryKey } from 'drizzle-orm/sqlite-core'
 
-export const bytea = customType<{ data: Buffer }>({
+export const blob = customType<{ data: Buffer }>({
   dataType() {
-    return 'bytea'
+    return 'blob'
   },
 })
 
-export const tenants = pgTable('tenants', {
-  id: serial('id').primaryKey(),
-  uuid: uuid('uuid').notNull().unique().defaultRandom(),
-  tipo: varchar('tipo', { length: 2 }).notNull().default('pj'),
-  documento: varchar('documento', { length: 20 }).notNull().default('').unique(),
-  nome: varchar('nome', { length: 255 }).notNull(),
-  nome_fantasia: varchar('nome_fantasia', { length: 255 }),
-  inscricao_estadual: varchar('inscricao_estadual', { length: 20 }),
-  email_contato: varchar('email_contato', { length: 255 }).notNull().default(''),
-  telefone_celular: varchar('telefone_celular', { length: 20 }),
-  whatsapp: boolean('whatsapp').notNull().default(false),
-  telefone_fixo: varchar('telefone_fixo', { length: 20 }),
-  cep: varchar('cep', { length: 8 }),
-  logradouro: varchar('logradouro', { length: 255 }),
-  numero: varchar('numero', { length: 20 }),
-  complemento: varchar('complemento', { length: 100 }),
-  bairro: varchar('bairro', { length: 100 }),
-  cidade: varchar('cidade', { length: 100 }),
-  uf: varchar('uf', { length: 2 }),
-  created_at: timestamp('created_at').defaultNow().notNull(),
-  updated_at: timestamp('updated_at').defaultNow().notNull(),
+export const tenants = sqliteTable('tenants', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  uuid: text('uuid').notNull().unique().$default(() => crypto.randomUUID()),
+  tipo: text('tipo', { length: 2 }).notNull().default('pj'),
+  documento: text('documento', { length: 20 }).notNull().default('').unique(),
+  nome: text('nome', { length: 255 }).notNull(),
+  nome_fantasia: text('nome_fantasia', { length: 255 }),
+  inscricao_estadual: text('inscricao_estadual', { length: 20 }),
+  email_contato: text('email_contato', { length: 255 }).notNull().default(''),
+  telefone_celular: text('telefone_celular', { length: 20 }),
+  whatsapp: integer('whatsapp', { mode: 'boolean' }).notNull().default(false),
+  telefone_fixo: text('telefone_fixo', { length: 20 }),
+  cep: text('cep', { length: 8 }),
+  logradouro: text('logradouro', { length: 255 }),
+  numero: text('numero', { length: 20 }),
+  complemento: text('complemento', { length: 100 }),
+  bairro: text('bairro', { length: 100 }),
+  cidade: text('cidade', { length: 100 }),
+  uf: text('uf', { length: 2 }),
+  created_at: text('created_at').$default(() => new Date().toISOString()).notNull(),
+  updated_at: text('updated_at').$default(() => new Date().toISOString()).notNull(),
   updated_by: integer('updated_by'),
 })
 
-export const tenantUsuarios = pgTable('tenant_usuarios', {
-  id: serial('id').primaryKey(),
+export const tenantUsuarios = sqliteTable('tenant_usuarios', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
   tenant_id: integer('tenant_id').notNull().references(() => tenants.id),
-  email: varchar('email', { length: 255 }).notNull().unique(),
-  senha_hash: varchar('senha_hash', { length: 255 }).notNull(),
-  nome: varchar('nome', { length: 255 }),
-  papel: varchar('papel', { length: 20 }).notNull().default('operador'),
-  created_at: timestamp('created_at').defaultNow().notNull(),
+  email: text('email', { length: 255 }).notNull().unique(),
+  senha_hash: text('senha_hash', { length: 255 }).notNull(),
+  nome: text('nome', { length: 255 }),
+  papel: text('papel', { length: 20 }).notNull().default('operador'),
+  created_at: text('created_at').$default(() => new Date().toISOString()).notNull(),
 })
 
-export const prestadores = pgTable('prestadores', {
-  cnpj: varchar('cnpj', { length: 14 }).notNull(),
+export const prestadores = sqliteTable('prestadores', {
+  cnpj: text('cnpj', { length: 14 }).notNull(),
   tenant_id: integer('tenant_id').notNull().references(() => tenants.id),
-  razao_social: varchar('razao_social', { length: 255 }).notNull(),
-  ambiente: varchar('ambiente', { length: 20 }).notNull().default('Homologacao'),
-  certificado_pfx: bytea('certificado_pfx'),
-  certificado_senha: varchar('certificado_senha', { length: 255 }).notNull(),
-  certificado_validade: varchar('certificado_validade', { length: 20 }).default(''),
-  certificado_nome: varchar('certificado_nome', { length: 255 }).default(''),
-  created_at: timestamp('created_at').defaultNow().notNull(),
+  razao_social: text('razao_social', { length: 255 }).notNull(),
+  ambiente: text('ambiente', { length: 20 }).notNull().default('Homologacao'),
+  certificado_pfx: blob('certificado_pfx'),
+  certificado_senha: text('certificado_senha', { length: 255 }).notNull(),
+  certificado_validade: text('certificado_validade', { length: 20 }).default(''),
+  certificado_nome: text('certificado_nome', { length: 255 }).default(''),
+  created_at: text('created_at').$default(() => new Date().toISOString()).notNull(),
 }, (table) => ({
   pk: primaryKey({ columns: [table.tenant_id, table.cnpj] }),
 }))
 
-export const documentos = pgTable('documentos', {
-  id: serial('id').primaryKey(),
+export const documentos = sqliteTable('documentos', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
   tenant_id: integer('tenant_id').notNull().references(() => tenants.id),
-  chave_acesso: varchar('chave_acesso', { length: 50 }).notNull().unique(),
-  prestador_cnpj: varchar('prestador_cnpj', { length: 14 }).notNull(),
+  chave_acesso: text('chave_acesso', { length: 50 }).notNull().unique(),
+  prestador_cnpj: text('prestador_cnpj', { length: 14 }).notNull(),
   operacao_id: integer('operacao_id'),
-  nsu: varchar('nsu', { length: 20 }).default(''),
+  nsu: text('nsu', { length: 20 }).default(''),
   xml_nfse: text('xml_nfse').default(''),
-  data_emissao: varchar('data_emissao', { length: 20 }),
-  emissao_dh: varchar('emissao_dh', { length: 30 }),
-  pdf_blob: bytea('pdf_blob'),
-  created_at: timestamp('created_at').defaultNow().notNull(),
+  data_emissao: text('data_emissao', { length: 20 }),
+  emissao_dh: text('emissao_dh', { length: 30 }),
+  pdf_blob: blob('pdf_blob'),
+  created_at: text('created_at').$default(() => new Date().toISOString()).notNull(),
 })
 
-export const configuracoes = pgTable('configuracoes', {
-  id: serial('id').primaryKey(),
+export const configuracoes = sqliteTable('configuracoes', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
   tenant_id: integer('tenant_id').notNull().references(() => tenants.id).unique(),
-  ambiente: varchar('ambiente', { length: 20 }).default('Homologacao'),
+  ambiente: text('ambiente', { length: 20 }).default('Homologacao'),
   codigo_municipio: integer('codigo_municipio').default(1001058),
-  lgpd_ativo: boolean('lgpd_ativo').default(false),
-  cnpj: varchar('cnpj', { length: 14 }).default(''),
-  razao_social: varchar('razao_social', { length: 255 }).default(''),
-  atualizada_em: timestamp('atualizada_em').defaultNow(),
+  lgpd_ativo: integer('lgpd_ativo', { mode: 'boolean' }).default(false),
+  cnpj: text('cnpj', { length: 14 }).default(''),
+  razao_social: text('razao_social', { length: 255 }).default(''),
+  atualizada_em: text('atualizada_em').$default(() => new Date().toISOString()),
 })
 
 export const operacoes = pgTable('operacoes', {
@@ -155,7 +155,6 @@ export const planLimits = pgTable('plan_limits', {
   prestadores_max: integer('prestadores_max').notNull().default(1),
   documentos_mes_max: integer('documentos_mes_max').notNull().default(50),
   usuarios_max: integer('usuarios_max').notNull().default(2),
-  danfse: boolean('danfse').notNull().default(true),
   lote_zip: boolean('lote_zip').notNull().default(false),
   created_at: timestamp('created_at').defaultNow().notNull(),
 })
@@ -166,7 +165,6 @@ export const tenantOverrides = pgTable('tenant_overrides', {
   prestadores_max: integer('prestadores_max'),
   documentos_mes_max: integer('documentos_mes_max'),
   usuarios_max: integer('usuarios_max'),
-  danfse: boolean('danfse'),
   lote_zip: boolean('lote_zip'),
   updated_at: timestamp('updated_at').defaultNow().notNull(),
   updated_by: integer('updated_by').references(() => tenantUsuarios.id),
