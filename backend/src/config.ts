@@ -13,7 +13,7 @@ export function carregarConfig(): AppConfig {
 
   const databaseUrl = process.env.DATABASE_URL
   if (!databaseUrl) {
-    throw new Error('DATABASE_URL não definida. Configure a URL de conexão PostgreSQL.')
+    throw new Error('DATABASE_URL não definida. Configure o caminho do arquivo SQLite (ex: ./data/gestor_nfse.sqlite).')
   }
 
   const jwtSecret = process.env.JWT_SECRET
