@@ -79,102 +79,102 @@ export const configuracoes = sqliteTable('configuracoes', {
   atualizada_em: text('atualizada_em').$default(() => new Date().toISOString()),
 })
 
-export const operacoes = pgTable('operacoes', {
-  id: serial('id').primaryKey(),
+export const operacoes = sqliteTable('operacoes', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
   tenant_id: integer('tenant_id').notNull().references(() => tenants.id),
-  prestador_cnpj: varchar('prestador_cnpj', { length: 14 }).notNull(),
-  tipo: varchar('tipo', { length: 20 }).default(''),
-  nsu_consultado: varchar('nsu_consultado', { length: 20 }),
-  ultimo_nsu: varchar('ultimo_nsu', { length: 20 }).default(''),
-  status: varchar('status', { length: 30 }).default(''),
+  prestador_cnpj: text('prestador_cnpj', { length: 14 }).notNull(),
+  tipo: text('tipo', { length: 20 }).default(''),
+  nsu_consultado: text('nsu_consultado', { length: 20 }),
+  ultimo_nsu: text('ultimo_nsu', { length: 20 }).default(''),
+  status: text('status', { length: 30 }).default(''),
   qtd_documentos: integer('qtd_documentos').default(0),
   xml_request: text('xml_request'),
   xml_response: text('xml_response'),
   xml_erro: text('xml_erro'),
-  created_at: timestamp('created_at').defaultNow().notNull(),
+  created_at: text('created_at').$default(() => new Date().toISOString()).notNull(),
 })
 
-export const backgroundTasks = pgTable('background_tasks', {
-  id: varchar('id', { length: 36 }).primaryKey(),
+export const backgroundTasks = sqliteTable('background_tasks', {
+  id: text('id', { length: 36 }).primaryKey(),
   tenant_id: integer('tenant_id').notNull().references(() => tenants.id),
-  tipo: varchar('tipo', { length: 50 }).default(''),
-  chave_acesso: varchar('chave_acesso', { length: 50 }),
-  cnpj: varchar('cnpj', { length: 14 }),
-  status: varchar('status', { length: 20 }).default('pending'),
+  tipo: text('tipo', { length: 50 }).default(''),
+  chave_acesso: text('chave_acesso', { length: 50 }),
+  cnpj: text('cnpj', { length: 14 }),
+  status: text('status', { length: 20 }).default('pending'),
   progresso: integer('progresso').default(0),
   mensagem: text('mensagem').default(''),
   resultado_json: text('resultado_json'),
   erro_texto: text('erro_texto'),
-  criado_em: timestamp('criado_em').defaultNow().notNull(),
-  atualizado_em: timestamp('atualizado_em').defaultNow().notNull(),
+  criado_em: text('criado_em').$default(() => new Date().toISOString()).notNull(),
+  atualizado_em: text('atualizado_em').$default(() => new Date().toISOString()).notNull(),
 })
 
-export const agendamentos = pgTable('agendamentos', {
-  id: serial('id').primaryKey(),
+export const agendamentos = sqliteTable('agendamentos', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
   tenant_id: integer('tenant_id').notNull().references(() => tenants.id),
-  prestador_cnpj: varchar('prestador_cnpj', { length: 14 }),
-  tipo: varchar('tipo', { length: 30 }).default('consulta_distribuicao'),
+  prestador_cnpj: text('prestador_cnpj', { length: 14 }),
+  tipo: text('tipo', { length: 30 }).default('consulta_distribuicao'),
   intervalo_minutos: integer('intervalo_minutos').default(60),
-  ativo: boolean('ativo').default(true),
-  ultima_execucao: timestamp('ultima_execucao'),
-  proxima_execucao: timestamp('proxima_execucao'),
-  created_at: timestamp('created_at').defaultNow().notNull(),
+  ativo: integer('ativo', { mode: 'boolean' }).default(true),
+  ultima_execucao: text('ultima_execucao'),
+  proxima_execucao: text('proxima_execucao'),
+  created_at: text('created_at').$default(() => new Date().toISOString()).notNull(),
 })
 
-export const subscriptions = pgTable('subscriptions', {
-  id: serial('id').primaryKey(),
+export const subscriptions = sqliteTable('subscriptions', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
   tenant_id: integer('tenant_id').notNull().references(() => tenants.id).unique(),
-  uuid: uuid('uuid').notNull().unique().defaultRandom(),
-  plano: varchar('plano', { length: 50 }).notNull().default('trial'),
-  status: varchar('status', { length: 50 }).notNull().default('trialing'),
-  trial_fim: timestamp('trial_fim').notNull(),
-  periodo_fim: timestamp('periodo_fim').notNull(),
-  gateway_customer_id: varchar('gateway_customer_id', { length: 100 }),
-  gateway_subscription_id: varchar('gateway_subscription_id', { length: 100 }),
-  cancelado_em: timestamp('cancelado_em'),
-  created_at: timestamp('created_at').defaultNow().notNull(),
-  updated_at: timestamp('updated_at').defaultNow().notNull(),
-  asaas_customer_id: varchar('asaas_customer_id', { length: 100 }),
-  asaas_subscription_id: varchar('asaas_subscription_id', { length: 100 }),
+  uuid: text('uuid').notNull().unique().$default(() => crypto.randomUUID()),
+  plano: text('plano', { length: 50 }).notNull().default('trial'),
+  status: text('status', { length: 50 }).notNull().default('trialing'),
+  trial_fim: text('trial_fim').notNull(),
+  periodo_fim: text('periodo_fim').notNull(),
+  gateway_customer_id: text('gateway_customer_id', { length: 100 }),
+  gateway_subscription_id: text('gateway_subscription_id', { length: 100 }),
+  cancelado_em: text('cancelado_em'),
+  created_at: text('created_at').$default(() => new Date().toISOString()).notNull(),
+  updated_at: text('updated_at').$default(() => new Date().toISOString()).notNull(),
+  asaas_customer_id: text('asaas_customer_id', { length: 100 }),
+  asaas_subscription_id: text('asaas_subscription_id', { length: 100 }),
   documentos_este_mes: integer('documentos_este_mes').notNull().default(0),
-  documentos_mes_ref: varchar('documentos_mes_ref', { length: 7 }),
+  documentos_mes_ref: text('documentos_mes_ref', { length: 7 }),
 })
 
-export const automacaoLogs = pgTable('automacao_logs', {
-  id: serial('id').primaryKey(),
+export const automacaoLogs = sqliteTable('automacao_logs', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
   tenant_id: integer('tenant_id').notNull().references(() => tenants.id),
-  prestador_cnpj: varchar('prestador_cnpj', { length: 14 }),
-  tipo: varchar('tipo', { length: 30 }).default(''),
+  prestador_cnpj: text('prestador_cnpj', { length: 14 }),
+  tipo: text('tipo', { length: 30 }).default(''),
   mensagem: text('mensagem').default(''),
-  created_at: timestamp('created_at').defaultNow().notNull(),
+  created_at: text('created_at').$default(() => new Date().toISOString()).notNull(),
 })
 
-export const planLimits = pgTable('plan_limits', {
-  id: serial('id').primaryKey(),
-  plano: varchar('plano', { length: 50 }).notNull().unique(),
+export const planLimits = sqliteTable('plan_limits', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  plano: text('plano', { length: 50 }).notNull().unique(),
   prestadores_max: integer('prestadores_max').notNull().default(1),
   documentos_mes_max: integer('documentos_mes_max').notNull().default(50),
   usuarios_max: integer('usuarios_max').notNull().default(2),
-  lote_zip: boolean('lote_zip').notNull().default(false),
-  created_at: timestamp('created_at').defaultNow().notNull(),
+  lote_zip: integer('lote_zip', { mode: 'boolean' }).notNull().default(false),
+  created_at: text('created_at').$default(() => new Date().toISOString()).notNull(),
 })
 
-export const tenantOverrides = pgTable('tenant_overrides', {
-  id: serial('id').primaryKey(),
+export const tenantOverrides = sqliteTable('tenant_overrides', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
   tenant_id: integer('tenant_id').notNull().unique().references(() => tenants.id),
   prestadores_max: integer('prestadores_max'),
   documentos_mes_max: integer('documentos_mes_max'),
   usuarios_max: integer('usuarios_max'),
-  lote_zip: boolean('lote_zip'),
-  updated_at: timestamp('updated_at').defaultNow().notNull(),
+  lote_zip: integer('lote_zip', { mode: 'boolean' }),
+  updated_at: text('updated_at').$default(() => new Date().toISOString()).notNull(),
   updated_by: integer('updated_by').references(() => tenantUsuarios.id),
 })
 
-export const asaasWebhooks = pgTable('asaas_webhooks', {
-  id: serial('id').primaryKey(),
-  event: varchar('event', { length: 100 }).notNull(),
-  asaas_id: varchar('asaas_id', { length: 100 }),
+export const asaasWebhooks = sqliteTable('asaas_webhooks', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  event: text('event', { length: 100 }).notNull(),
+  asaas_id: text('asaas_id', { length: 100 }),
   subscription_id: integer('subscription_id').references(() => subscriptions.id),
   raw_body: text('raw_body'),
-  processed_at: timestamp('processed_at').defaultNow().notNull(),
+  processed_at: text('processed_at').$default(() => new Date().toISOString()).notNull(),
 })

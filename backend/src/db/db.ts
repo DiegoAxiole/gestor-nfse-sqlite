@@ -1,14 +1,15 @@
 import 'dotenv/config'
-import { drizzle } from 'drizzle-orm/node-postgres'
-import { Pool } from 'pg'
+import { drizzle } from 'drizzle-orm/better-sqlite3'
+import Database from 'better-sqlite3'
 import * as schema from './schema.js'
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL!,
-})
+const dbPath = process.env.DATABASE_URL || './data/gestor_nfse.sqlite'
+const sqliteDb = new Database(dbPath)
+sqliteDb.pragma('journal_mode = WAL')
+sqliteDb.pragma('foreign_keys = ON')
 
-export const db = drizzle(pool, { schema })
+export const db = drizzle(sqliteDb, { schema })
 
-export async function closeDb() {
-  await pool.end()
+export function closeDb() {
+  sqliteDb.close()
 }

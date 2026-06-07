@@ -7,7 +7,7 @@ import DashboardView from './components/DashboardView'
 import DocumentosView from './pages/DocumentosView'
 import EmpresasView from './pages/EmpresasView'
 import DownloadLoteView from './pages/DownloadLoteView'
-import GerarDanfeView from './pages/GerarDanfeView'
+
 import HistoricoView from './pages/HistoricoView'
 import PerfilView from './pages/PerfilView'
 import UsuariosView from './pages/UsuariosView'
@@ -23,7 +23,7 @@ export default function App() {
         <Route path="documentos" element={<DocumentosView />} />
         <Route path="empresas" element={<EmpresasView />} />
         <Route path="download-lote" element={<DownloadLoteView />} />
-        <Route path="gerar-danfe" element={<GerarDanfeView />} />
+
         <Route path="historico" element={<HistoricoView />} />
         <Route path="assinatura" element={<SubscriptionView />} />
         <Route path="usuarios" element={<UsuariosView />} />

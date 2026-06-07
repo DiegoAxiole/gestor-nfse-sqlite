@@ -5,7 +5,7 @@ import { tenantOverrides } from '../../db/schema.js'
 import { eq } from 'drizzle-orm'
 import { adminMiddleware } from '../../shared/auth.middleware.js'
 
-const ALLOWED_OVERRIDES = ['prestadores_max', 'documentos_mes_max', 'usuarios_max', 'danfse', 'lote_zip']
+const ALLOWED_OVERRIDES = ['prestadores_max', 'documentos_mes_max', 'usuarios_max', 'lote_zip']
 
 export function criarRouterPlanLimits(): Router {
   const router = Router()

@@ -146,8 +146,8 @@ export const api = {
   baixarXml: (chaveAcesso: string): Promise<string> =>
     requestText(`/documentos/${chaveAcesso}/xml`),
 
-  baixarPdf: (chaveAcesso: string): Promise<Blob> =>
-    requestBlob(`/documentos/${chaveAcesso}/pdf`),
+  baixarPdf: (chaveAcesso: string, lgpdAtivo?: boolean): Promise<Blob> =>
+    requestBlob(`/documentos/${chaveAcesso}/pdf${lgpdAtivo ? '?lgpd=true' : ''}`),
 
   // Automação
   agendar: (body: AgendamentoInput): Promise<Agendamento> =>

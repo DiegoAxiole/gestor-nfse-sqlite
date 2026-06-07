@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
-import { LayoutDashboard, Printer, History, FileCode2, Menu, X, ShieldCheck, AlertCircle, FolderDown, LogOut, User, Users, CreditCard } from 'lucide-react'
+import { LayoutDashboard, History, FileCode2, Menu, X, ShieldCheck, AlertCircle, FolderDown, LogOut, User, Users, CreditCard } from 'lucide-react'
 import type { Documento, Operacao, Empresa, Subscription } from '../types'
 import * as api from '../api'
 import { formatCurrency } from '../utils'
@@ -24,7 +24,6 @@ export interface OutletContext {
   onAddDocuments: (docs: Documento[]) => void
   onLgpdChange: (ativo: boolean) => void
   onViewXml: (chave: string) => void
-  onGenerateDanfe: (chave: string) => void
   triggerToast: (message: string, type: 'success' | 'error' | 'info') => void
 }
 
@@ -116,16 +115,10 @@ export default function ProtectedLayout() {
     triggerToast(`XML da Nota ${doc.numero_nota} baixado com sucesso!`, 'success')
   }
 
-  const handleGenerateDanfePage = (chave: string) => {
-    setSelectedChave(chave)
-    navigate('/gerar-danfe')
-    setMobileMenuOpen(false)
-  }
-
   const handleNavigation = (tab: string) => {
     const routeMap: Record<string, string> = {
       dashboard: '/', documentos: '/documentos', empresas: '/empresas',
-      download_lote: '/download-lote', gerar: '/gerar-danfe',
+      download_lote: '/download-lote',
       historico: '/historico', usuarios: '/usuarios', assinatura: '/assinatura', perfil: '/perfil',
     }
     navigate(routeMap[tab] || '/')
@@ -139,7 +132,6 @@ export default function ProtectedLayout() {
     { id: 'documentos', label: 'Documentos', path: '/documentos', icon: FileCode2 },
     { id: 'empresas', label: 'Gestao de Empresas', path: '/empresas', icon: ShieldCheck },
     { id: 'download_lote', label: 'Exportar XMLs (ZIP)', path: '/download-lote', icon: FolderDown },
-    { id: 'gerar', label: 'Gerar DANFSe', path: '/gerar-danfe', icon: Printer },
     { id: 'historico', label: 'Historico NSU', path: '/historico', icon: History },
     ...(isAdmin ? [{ id: 'usuarios' as const, label: 'Usuários', path: '/usuarios' as const, icon: Users }] : []),
     { id: 'assinatura', label: 'Assinatura', path: '/assinatura', icon: CreditCard },
@@ -157,7 +149,6 @@ export default function ProtectedLayout() {
     onAddDocuments: handleAddDocuments,
     onLgpdChange: handleLgpdChange,
     onViewXml: handleViewXmlPage,
-    onGenerateDanfe: handleGenerateDanfePage,
     selectedChave,
     triggerToast,
   }

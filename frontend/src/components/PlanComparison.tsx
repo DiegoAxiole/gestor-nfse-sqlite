@@ -7,7 +7,6 @@ interface PlanData {
   prestadores: number | string
   documentos: number | string
   usuarios: number
-  danfse: boolean
   loteZip: boolean
   destaque?: boolean
 }
@@ -20,7 +19,6 @@ const PLANOS: PlanData[] = [
     prestadores: 2,
     documentos: '100/mês',
     usuarios: 3,
-    danfse: true,
     loteZip: false,
     destaque: true,
   },
@@ -31,7 +29,6 @@ const PLANOS: PlanData[] = [
     prestadores: 10,
     documentos: '2.000/mês',
     usuarios: 10,
-    danfse: true,
     loteZip: true,
   },
 ]
@@ -64,10 +61,6 @@ export default function PlanComparison({ selected, onSelect }: Props) {
           </div>
           <p className="text-2xl font-bold text-white mb-4">{plan.preco}</p>
           <ul className="space-y-2 text-xs">
-            <li className="flex items-center gap-2">
-              {plan.danfse ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <X className="w-3.5 h-3.5 text-rose-400" />}
-              <span className="text-slate-300">DANFSe</span>
-            </li>
             <li className="flex items-center gap-2">
               {plan.loteZip ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <X className="w-3.5 h-3.5 text-rose-400" />}
               <span className="text-slate-300">Download ZIP</span>

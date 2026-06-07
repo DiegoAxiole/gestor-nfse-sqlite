@@ -6,7 +6,6 @@ export interface ResolvedLimits {
   prestadores_max: number
   documentos_mes_max: number
   usuarios_max: number
-  danfse: boolean
   lote_zip: boolean
 }
 
@@ -25,7 +24,7 @@ export const planLimitsService = {
       .where(eq(planLimits.plano, plano))
       .limit(1)
 
-    const base = defaults ?? { prestadores_max: 1, documentos_mes_max: 50, usuarios_max: 2, danfse: true, lote_zip: true, plano: 'trial', id: 0, created_at: new Date() }
+    const base = defaults ?? { prestadores_max: 1, documentos_mes_max: 50, usuarios_max: 2, lote_zip: true, plano: 'trial', id: 0, created_at: new Date() }
 
     const [override] = await db.select().from(tenantOverrides)
       .where(eq(tenantOverrides.tenant_id, tenantId))
@@ -37,7 +36,6 @@ export const planLimitsService = {
       prestadores_max: override.prestadores_max ?? base.prestadores_max,
       documentos_mes_max: override.documentos_mes_max ?? base.documentos_mes_max,
       usuarios_max: override.usuarios_max ?? base.usuarios_max,
-      danfse: override.danfse ?? base.danfse,
       lote_zip: override.lote_zip ?? base.lote_zip,
     }
   },

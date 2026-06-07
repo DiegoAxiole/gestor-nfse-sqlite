@@ -29,12 +29,6 @@ export interface UltimoNsuResponse {
   ultimo_nsu: string
 }
 
-export interface ResultadoDanfse {
-  sucesso: boolean
-  chave_acesso: string
-  mensagem_erro: string
-}
-
 export interface Documento {
   chave_acesso: string
   prestador_cnpj: string
@@ -77,13 +71,13 @@ export interface ResultadoDistribuicaoTask {
 
 export interface TaskStatus {
   task_id: string
-  tipo: "gerar_danfse" | "consultar_distribuicao"
+  tipo: "consultar_distribuicao"
   chave_acesso: string | null
   cnpj: string
   status: "processing" | "completed" | "error"
   progresso: number
   mensagem: string
-  resultado: ResultadoDistribuicaoTask | ResultadoDanfse | null
+  resultado: ResultadoDistribuicaoTask | null
   mensagem_erro: string | null
   criado_em: string
   atualizado_em: string

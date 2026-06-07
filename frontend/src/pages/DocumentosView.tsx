@@ -3,7 +3,7 @@ import { useOutletContext } from "react-router-dom";
 import type { OutletContext } from "../components/ProtectedLayout";
 import { Documento, Empresa } from "../types";
 import { formatCurrency, formatDate, formatCnpj, maskRazao, maskNome, maskChave } from "../utils";
-import { buscarDocumentosPaginated } from "../api";
+import { buscarDocumentosPaginated, api } from "../api";
 import {
   FileText,
   ExternalLink,
@@ -13,12 +13,11 @@ import {
   ChevronRight,
   Loader2,
   AlertTriangle,
-  Check,
-  X,
 } from "lucide-react";
 
 export default function DocumentosView() {
-  const { empresas, lgpdAtivo = false, onViewXml, onGenerateDanfe } = useOutletContext<OutletContext>();
+  const { empresas, lgpdAtivo = false, onViewXml } = useOutletContext<OutletContext>();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [empresaFilter, setEmpresaFilter] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -28,6 +27,27 @@ export default function DocumentosView() {
   const [docs, setDocs] = useState<Documento[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [baixandoPdf, setBaixandoPdf] = useState<string | null>(null);
+
+  const handleDownloadPdf = async (chave: string) => {
+    if (baixandoPdf) return;
+    setBaixandoPdf(chave);
+    try {
+      const blob = await api.baixarPdf(chave, lgpdAtivo);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `DANFSe_${chave}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err: any) {
+      alert(err.message || 'Erro ao baixar PDF');
+    } finally {
+      setBaixandoPdf(null);
+    }
+  };
   const [error, setError] = useState<string | null>(null);
 
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
@@ -236,17 +256,19 @@ export default function DocumentosView() {
                       {formatCurrency(doc.valor_servicos)}
                     </td>
                     <td className="py-3 px-3 text-center align-middle">
-                      {doc.tem_pdf ? (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/15 px-2 py-0.5 rounded">
-                          <Check className="w-3 h-3" />
-                          OK
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-500 bg-slate-950 border border-slate-800 px-2 py-0.5 rounded">
-                          <X className="w-3 h-3" />
-                          Não
-                        </span>
-                      )}
+                      <button
+                        onClick={() => handleDownloadPdf(doc.chave_acesso)}
+                        disabled={baixandoPdf === doc.chave_acesso}
+                        className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 hover:text-emerald-350 bg-emerald-500/5 hover:bg-emerald-500/10 border border-emerald-500/10 hover:border-emerald-500/25 px-2.5 py-1.5 rounded uppercase tracking-wider transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                        title="Baixar DANFSe PDF"
+                      >
+                        {baixandoPdf === doc.chave_acesso ? (
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                        ) : (
+                          <FileDown className="w-3 h-3" />
+                        )}
+                        PDF
+                      </button>
                     </td>
                     <td className="py-3 px-3 text-right align-middle">
                       <div className="flex justify-end items-center gap-2">
@@ -257,13 +279,7 @@ export default function DocumentosView() {
                         >
                           XML <ExternalLink className="w-3 h-3" />
                         </button>
-                        <button
-                          onClick={() => onGenerateDanfe(doc.chave_acesso)}
-                          className="text-[10px] font-bold text-emerald-400 hover:text-emerald-350 bg-emerald-500/5 hover:bg-emerald-500/10 border border-emerald-500/10 px-2.5 py-1.5 rounded uppercase tracking-wider transition-all inline-flex items-center gap-1.5 cursor-pointer"
-                          title="Baixar PDF / DANFE"
-                        >
-                          PDF <FileDown className="w-3.5 h-3.5" />
-                        </button>
+
                       </div>
                     </td>
                   </tr>

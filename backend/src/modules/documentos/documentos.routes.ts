@@ -3,6 +3,7 @@ import archiver from 'archiver'
 import type { Request, Response, NextFunction } from 'express'
 import { documentoRepository } from './documentos.repository.js'
 import { planLimitMiddleware } from '../plan-limits/plan-limits.middleware.js'
+import { parseNfseXml, generateDanfsePdf } from 'danfse-pdf-generator'
 
 export function criarRouterDocumentos(): Router {
   const router = Router()
@@ -36,10 +37,17 @@ export function criarRouterDocumentos(): Router {
 
   router.get('/:chave/pdf', async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const doc = await documentoRepository.buscarPdf(req.params.chave, req.tenantId!)
-      if (!doc?.pdf_blob) { res.status(404).json({ detail: 'PDF nao encontrado' }); return }
+      const doc = await documentoRepository.buscarXml(req.params.chave, req.tenantId!)
+      if (!doc?.xml_nfse) {
+        res.status(404).json({ detail: 'XML nao encontrado para gerar o PDF' })
+        return
+      }
+      const dados = parseNfseXml(doc.xml_nfse)
+      const lgpdAtivo = req.query.lgpd === 'true'
+      const pdfBuffer = await generateDanfsePdf(dados, { ambienteGerador: '1', hideWarnings: true, lgpdAtivo })
       res.setHeader('Content-Type', 'application/pdf')
-      res.send(doc.pdf_blob)
+      res.setHeader('Content-Disposition', `attachment; filename="DANFSe_${req.params.chave}.pdf"`)
+      res.send(pdfBuffer)
     } catch (err) { next(err) }
   })
 
