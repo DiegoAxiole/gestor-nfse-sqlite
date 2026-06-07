@@ -58,11 +58,14 @@ export const prestadorRepository = {
     tenantId: number,
     data: Partial<Pick<PrestadorRow, 'razao_social' | 'ambiente' | 'certificado_pfx' | 'certificado_senha' | 'certificado_nome' | 'certificado_validade'>>
   ) {
-    const rows = await db.update(prestadores)
+    db.update(prestadores)
       .set(data)
       .where(and(eq(prestadores.cnpj, cnpj), eq(prestadores.tenant_id, tenantId)))
-      .returning()
-    return rows[0]
+      .run()
+    const row = await db.select().from(prestadores).where(
+      and(eq(prestadores.cnpj, cnpj), eq(prestadores.tenant_id, tenantId))
+    ).limit(1).then(rows => rows[0])
+    return row
   },
 
   async remover(cnpj: string, tenantId: number) {

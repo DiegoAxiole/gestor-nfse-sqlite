@@ -39,12 +39,13 @@ export const subscriptionService = {
       await billingService.cancelarAssinatura(sub.asaas_subscription_id).catch(() => {})
     }
 
-    const rows = await db.update(subscriptions)
+    db.update(subscriptions)
       .set({ status: 'canceled', cancelado_em: new Date(), updated_at: new Date() })
       .where(eq(subscriptions.tenant_id, tenantId))
-      .returning()
-    if (!rows[0]) throw new NotFoundError('Subscription', String(tenantId))
-    return { ...rows[0], diasRestantes: 0 }
+      .run()
+    const [updated] = await db.select().from(subscriptions).where(eq(subscriptions.tenant_id, tenantId)).limit(1)
+    if (!updated) throw new NotFoundError('Subscription', String(tenantId))
+    return { ...updated, diasRestantes: 0 }
   },
 
   async upgrade(tenantId: number, data: { plano: string; periodo: string; payment_method: 'PIX' | 'BOLETO' | 'CREDIT_CARD' }) {
@@ -74,7 +75,7 @@ export const subscriptionService = {
     const periodoFim = new Date()
     periodoFim.setDate(periodoFim.getDate() + 30)
 
-    const rows = await db.update(subscriptions)
+    db.update(subscriptions)
       .set({
         plano: data.plano,
         status: 'pending',
@@ -85,9 +86,9 @@ export const subscriptionService = {
         updated_at: new Date(),
       })
       .where(eq(subscriptions.tenant_id, tenantId))
-      .returning()
-
-    if (!rows[0]) throw new NotFoundError('Subscription', String(tenantId))
-    return { ...rows[0], payment_link: result.paymentLink, payment_method: data.payment_method, diasRestantes: 0 }
+      .run()
+    const [updated] = await db.select().from(subscriptions).where(eq(subscriptions.tenant_id, tenantId)).limit(1)
+    if (!updated) throw new NotFoundError('Subscription', String(tenantId))
+    return { ...updated, payment_link: result.paymentLink, payment_method: data.payment_method, diasRestantes: 0 }
   },
 }

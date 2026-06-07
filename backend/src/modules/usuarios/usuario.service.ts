@@ -56,18 +56,20 @@ export const usuarioService = {
   },
 
   async alterarPapel(tenantId: number, usuarioId: number, papel: string): Promise<UsuarioPerfil> {
-    const rows = await db.update(tenantUsuarios)
+    db.update(tenantUsuarios)
       .set({ papel })
       .where(and(eq(tenantUsuarios.id, usuarioId), eq(tenantUsuarios.tenant_id, tenantId)))
-      .returning({ id: tenantUsuarios.id, email: tenantUsuarios.email, nome: tenantUsuarios.nome, papel: tenantUsuarios.papel, created_at: tenantUsuarios.created_at })
-    if (!rows[0]) throw new NotFoundError('Usuário', String(usuarioId))
-    return rows[0]
+      .run()
+    const [usr] = await db.select({ id: tenantUsuarios.id, email: tenantUsuarios.email, nome: tenantUsuarios.nome, papel: tenantUsuarios.papel, created_at: tenantUsuarios.created_at }).from(tenantUsuarios).where(and(eq(tenantUsuarios.id, usuarioId), eq(tenantUsuarios.tenant_id, tenantId))).limit(1)
+    if (!usr) throw new NotFoundError('Usuário', String(usuarioId))
+    return usr
   },
 
   async remover(tenantId: number, usuarioId: number): Promise<void> {
-    const deleted = await db.delete(tenantUsuarios)
+    const [usr] = await db.select({ id: tenantUsuarios.id }).from(tenantUsuarios).where(and(eq(tenantUsuarios.id, usuarioId), eq(tenantUsuarios.tenant_id, tenantId))).limit(1)
+    if (!usr) throw new NotFoundError('Usuário', String(usuarioId))
+    db.delete(tenantUsuarios)
       .where(and(eq(tenantUsuarios.id, usuarioId), eq(tenantUsuarios.tenant_id, tenantId)))
-      .returning({ id: tenantUsuarios.id })
-    if (deleted.length === 0) throw new NotFoundError('Usuário', String(usuarioId))
+      .run()
   },
 }
