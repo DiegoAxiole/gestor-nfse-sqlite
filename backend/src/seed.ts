@@ -2,15 +2,17 @@ import { db } from './db/db.js'
 import { tenants, tenantUsuarios, subscriptions, planLimits } from './db/schema.js'
 import { sql } from 'drizzle-orm'
 import bcrypt from 'bcryptjs'
-import { Pool } from 'pg'
 
 async function seed() {
-  const pool = new Pool({ connectionString: process.env.DATABASE_URL! })
-  await pool.query(`TRUNCATE 
-    subscriptions, tenant_usuarios, configuracoes, prestadores, documentos, 
-    operacoes, background_tasks, agendamentos, automacao_logs, plan_limits, tenants 
-    RESTART IDENTITY CASCADE`)
-  await pool.end()
+  db.run(sql`PRAGMA foreign_keys = OFF`)
+  for (const table of [
+    'automacao_logs', 'agendamentos', 'background_tasks', 'documentos',
+    'prestadores', 'operacoes', 'configuracoes', 'plan_limits',
+    'tenant_usuarios', 'subscriptions', 'tenants',
+  ]) {
+    db.run(sql`DELETE FROM ${sql.identifier(table)}`)
+  }
+  db.run(sql`PRAGMA foreign_keys = ON`)
 
   const trialFim = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
 

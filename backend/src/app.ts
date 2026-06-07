@@ -37,7 +37,7 @@ export async function createApp() {
 
   await db.delete(backgroundTasks).where(and(
     sql`status IN ('completed', 'error')`,
-    sql`atualizado_em < NOW() - INTERVAL '24 hours'`
+    sql`atualizado_em < datetime('now', '-24 hours')`
   ))
 
   const app = express()
