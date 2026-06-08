@@ -12,6 +12,10 @@ Banco SQLite via Drizzle ORM (better-sqlite3).
 
 [⬇️ Baixar Setup-GestorNFSe-0.5.0.exe](./Setup-GestorNFSe-0.5.0.exe)
 
+
+https://github.com/user-attachments/assets/cbe8354c-97eb-4de6-a09e-f830f499ea54
+
+
 O instalador prepara tudo para rodar localmente no Windows — Node.js portátil, dependências, banco SQLite e servidor. Basta descompactar e executar `start.bat`.
 
 > 🎥 **Vídeo de instalação e como usar:** *[espaço reservado para vídeo]*
