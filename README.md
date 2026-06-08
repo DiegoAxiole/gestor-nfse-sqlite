@@ -8,6 +8,16 @@ Banco SQLite via Drizzle ORM (better-sqlite3).
 
 ---
 
+## Instalador para Windows
+
+[⬇️ Baixar Setup-GestorNFSe-0.5.0.exe](./Setup-GestorNFSe-0.5.0.exe)
+
+O instalador prepara tudo para rodar localmente no Windows — Node.js portátil, dependências, banco SQLite e servidor. Basta descompactar e executar `start.bat`.
+
+> 🎥 **Vídeo de instalação e como usar:** *[espaço reservado para vídeo]*
+
+---
+
 ## Para desenvolvedores
 
 ### Pré-requisitos
@@ -68,8 +78,7 @@ gestor-nfse/
 │   ├── dist/          Compilado
 │   └── public/        Frontend buildado (gerado pelo Vite)
 ├── frontend/          React 19 + TypeScript + Vite 6 + Tailwind CSS v4
-├── dev.bat            Iniciar servidores dev (Windows)
-├── dev.ps1            Iniciar servidor único (PowerShell)
+├── Setup-GestorNFSe-0.5.0.exe  Instalador para Windows
 └── AGENTS.md          Instruções para agentes OpenCode
 ```
 

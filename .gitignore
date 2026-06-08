@@ -39,3 +39,12 @@ releases/
 
 # Docs gerados por IA (nunca commitar)
 docs/
+
+# Certificados digitais (arquivos sensíveis)
+certificados/
+
+# Node runtime portátil (baixado pelo instalador)
+installer/node-*.zip
+
+# Arquivo de configuração do Inno Setup (gerado)
+installer/setup.iss
