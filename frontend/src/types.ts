@@ -1,15 +1,15 @@
 export interface Operacao {
-  id: string;
-  data: string;
-  tipo: "DISTRIBUICAO" | "NSU_ESPECIFICO" | "CONSULTA_LOTE";
-  nsu_consultado: string | null;
-  ultimo_nsu: string;
-  status: "SUCESSO" | "ERRO" | "FATAL";
-  xml_request: string;
-  xml_response: string;
-  xml_erro?: string;
-  lote_dfe_count: number;
-}
+	  id: string;
+	  data: string;
+	  tipo: "DISTRIBUICAO" | "NSU_ESPECIFICO" | "CONSULTA_LOTE";
+	  nsu_consultado: string | null;
+	  ultimo_nsu: string;
+	  status: string;
+	  xml_request: string;
+	  xml_response: string;
+	  xml_erro?: string;
+	  lote_dfe_count: number;
+	}
 
 export interface Documento {
   chave_acesso: string;

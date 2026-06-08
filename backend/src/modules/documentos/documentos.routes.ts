@@ -3,7 +3,7 @@ import archiver from 'archiver'
 import type { Request, Response, NextFunction } from 'express'
 import { documentoRepository } from './documentos.repository.js'
 import { planLimitMiddleware } from '../plan-limits/plan-limits.middleware.js'
-import { parseNfseXml, generateDanfsePdf } from 'danfse-pdf-generator'
+import { parseNfseXml, generateDanfsePdf } from '../../lib/danfse-pdf-generator.js'
 
 export function criarRouterDocumentos(): Router {
   const router = Router()
@@ -42,9 +42,10 @@ export function criarRouterDocumentos(): Router {
         res.status(404).json({ detail: 'XML nao encontrado para gerar o PDF' })
         return
       }
+      const lgpd = req.query.lgpd === 'true'
       const dados = parseNfseXml(doc.xml_nfse)
-      const lgpdAtivo = req.query.lgpd === 'true'
-      const pdfBuffer = await generateDanfsePdf(dados, { ambienteGerador: '1', hideWarnings: true, lgpdAtivo })
+      if (!dados) { res.status(422).json({ detail: 'Erro ao processar XML da NFSe' }); return }
+      const pdfBuffer = await generateDanfsePdf({ ...dados, chaveAcesso: req.params.chave }, { ambienteGerador: '1', hideWarnings: true, lgpdAtivo: lgpd })
       res.setHeader('Content-Type', 'application/pdf')
       res.setHeader('Content-Disposition', `attachment; filename="DANFSe_${req.params.chave}.pdf"`)
       res.send(pdfBuffer)

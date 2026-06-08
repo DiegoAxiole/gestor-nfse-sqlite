@@ -71,23 +71,37 @@ export function criarRouterDistribuicao(codigoMunicipio: number): Router {
             ambiente: prestador.ambiente === 'Homologacao' ? 'homologacao' : 'producao',
           })
 
-          const resultado = await client.sincronizar({ nsu: Number(nsu ?? 0), force: true })
-          client.fechar()
-          rmSync(tempCertPath, { force: true })
+	          let resultado: { status: string; ultimoNsu?: string | null; documentos: Array<{ chaveAcesso: string; nsu: string | number; xml: string; dataHoraGeracao?: string }> }
+	          try {
+	            resultado = await client.sincronizar({ nsu: Number(nsu ?? 0), force: true })
+	          } catch (syncErr: any) {
+	            const msgLower = (syncErr?.message ?? '').toLowerCase()
+	            if (msgLower.includes('nenhum documento') || msgLower.includes('nenhum')) {
+	              resultado = { status: 'NENHUM_DOCUMENTO', ultimoNsu: String(nsu ?? 0), documentos: [] }
+	            } else {
+	              throw syncErr
+	            }
+	          }
+	          client.fechar()
+	          rmSync(tempCertPath, { force: true })
 
-          await distribuicaoRepository.atualizarTask(taskId, { progresso: 70, mensagem: 'Salvando documentos...' })
+	          await distribuicaoRepository.atualizarTask(taskId, { progresso: 70, mensagem: 'Salvando documentos...' })
 
-          const operacaoId = await distribuicaoRepository.criarOperacao(
-            cnpj,
-            tipo_nsu ?? 'DISTRIBUICAO',
-            String(nsu ?? 0),
-            resultado.ultimoNsu ?? String(nsu ?? 0),
-            resultado.status,
-            resultado.documentos.length,
-            req.tenantId!,
-          )
+	          const statusOperacao = resultado.documentos.length > 0
+	            ? 'SUCESSO'
+	            : 'NENHUM_DOCUMENTO'
 
-          await distribuicaoRepository.inserirDocumentos(resultado.documentos, cnpj, operacaoId, req.tenantId!)
+	          const operacaoId = await distribuicaoRepository.criarOperacao(
+	            cnpj,
+	            tipo_nsu ?? 'DISTRIBUICAO',
+	            String(nsu ?? 0),
+	            resultado.ultimoNsu ?? String(nsu ?? 0),
+	            statusOperacao,
+	            resultado.documentos.length,
+	            req.tenantId!,
+	          )
+
+	          await distribuicaoRepository.inserirDocumentos(resultado.documentos, cnpj, operacaoId, req.tenantId!)
 
           await distribuicaoRepository.atualizarTask(taskId, {
             status: 'completed',

@@ -4,10 +4,18 @@ import { existsSync, appendFileSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { createRequire } from 'node:module'
+const _require = createRequire(import.meta.url)
+const pdfmake = _require('pdfmake')
+pdfmake.setUrlAccessPolicy(() => true)
+pdfmake.setLocalAccessPolicy(() => true)
+
+import { migrate } from 'drizzle-orm/better-sqlite3/migrator'
 import { carregarConfig } from './config.js'
 import { db } from './db/db.js'
-import { backgroundTasks } from './db/schema.js'
+import { tenants, tenantUsuarios, subscriptions, planLimits, backgroundTasks } from './db/schema.js'
 import { eq, sql, and } from 'drizzle-orm'
+import bcrypt from 'bcryptjs'
 import { criarRouterPrestadores } from './modules/prestadores/prestadores.routes.js'
 import { criarRouterConfig } from './modules/config/config.routes.js'
 import { criarRouterDistribuicao } from './modules/distribuicao/distribuicao.routes.js'
@@ -29,6 +37,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 export async function createApp() {
   const config = carregarConfig()
 
+  migrate(db, { migrationsFolder: join(__dirname, 'db', 'migrations') })
+
   await db.update(backgroundTasks).set({
     status: 'error',
     erro_texto: 'Servidor reiniciado enquanto a task estava em execução',
@@ -39,6 +49,40 @@ export async function createApp() {
     sql`status IN ('completed', 'error')`,
     sql`atualizado_em < datetime('now', '-24 hours')`
   ))
+
+  const existingTenant = db.select({ id: tenants.id }).from(tenants).limit(1).get()
+  if (!existingTenant) {
+    const trialFim = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+    const tenant = db.insert(tenants).values({
+      nome: 'Administrador',
+      documento: '00000000000000',
+      email_contato: 'admin@gestornfse.com',
+      tipo: 'pj',
+    }).returning().get()
+    db.insert(subscriptions).values({
+      tenant_id: tenant.id,
+      plano: 'trial',
+      status: 'trialing',
+      trial_fim: trialFim.toISOString(),
+      periodo_fim: trialFim.toISOString(),
+    }).run()
+    if (db.select().from(planLimits).all().length === 0) {
+      db.insert(planLimits).values([
+        { plano: 'trial', prestadores_max: 5, documentos_mes_max: 100, usuarios_max: 10, lote_zip: true },
+        { plano: 'basico', prestadores_max: 2, documentos_mes_max: 100, usuarios_max: 3, lote_zip: false },
+        { plano: 'profissional', prestadores_max: 10, documentos_mes_max: 2000, usuarios_max: 10, lote_zip: true },
+      ]).run()
+    }
+    const senhaHash = bcrypt.hashSync('admin123', 10)
+    db.insert(tenantUsuarios).values({
+      tenant_id: tenant.id,
+      email: 'admin@gestornfse.com',
+      nome: 'Administrador',
+      senha_hash: senhaHash,
+      papel: 'admin',
+    }).run()
+    console.log('[DB] Admin criado automaticamente: admin@gestornfse.com / admin123')
+  }
 
   const app = express()
 

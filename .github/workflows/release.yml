@@ -80,7 +80,7 @@ jobs:
           if (Test-Path "LICENSE") { Copy-Item "LICENSE" "$stage\" -Force }
 
           # .env template
-          Set-Content "$stage\backend\.env" "DATABASE_URL=postgresql://usuario:senha@host:5432/gestor_nfse"
+          Set-Content "$stage\backend\.env" "DATABASE_URL=.\data\gestor_nfse.sqlite"
 
           # Zip
           $version = "${{ github.ref_name }}"

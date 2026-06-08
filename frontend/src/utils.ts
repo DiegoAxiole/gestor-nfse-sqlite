@@ -1,7 +1,7 @@
 export function formatCnpj(value: string, lgpd?: boolean): string {
   const clean = value.replace(/\D/g, "");
   if (clean.length !== 14) return value;
-  if (lgpd) return `**.${clean.slice(2, 5)}.${clean.slice(5, 8)}/****-${clean.slice(12)}`;
+  if (lgpd) return `**.${clean.slice(2, 5)}.${clean.slice(5, 8)}/****-**`;
   return clean.replace(
     /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
     "$1.$2.$3/$4-$5"
@@ -10,21 +10,22 @@ export function formatCnpj(value: string, lgpd?: boolean): string {
 
 export function maskRazao(value: string): string {
   if (!value) return value;
-  const parts = value.trim().split(/\s+/);
-  if (parts.length <= 1) return value;
-  return parts[0] + " *****";
+  return value[0] + "*****";
 }
 
 export function maskNome(value: string): string {
   if (!value) return value;
-  const parts = value.trim().split(/\s+/);
-  if (parts.length <= 1) return value;
-  return parts[0] + " *****";
+  return value[0] + "*****";
 }
 
 export function maskChave(value: string): string {
-  if (!value || value.length <= 6) return value;
-  return "*".repeat(value.length - 4) + value.slice(-4);
+  if (!value) return value;
+  return "*".repeat(value.length);
+}
+
+export function maskAddress(value: string): string {
+  if (!value) return value;
+  return value[0] + "*****";
 }
 
 export function maskEmail(value: string): string {

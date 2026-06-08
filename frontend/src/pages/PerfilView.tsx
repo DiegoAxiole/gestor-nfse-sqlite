@@ -94,7 +94,9 @@ export default function PerfilView() {
       .then(([tenantRes, cfg]) => {
         setProfile(tenantRes.data)
         setEditData(tenantRes.data)
-        if (cfg) setConfigOpcoes({ ambiente: cfg.ambiente, codigo_municipio: cfg.codigo_municipio, lgpd_ativo: cfg.lgpd_ativo })
+        const c = cfg ? { ambiente: cfg.ambiente, codigo_municipio: cfg.codigo_municipio, lgpd_ativo: cfg.lgpd_ativo } : { ambiente: 'Homologacao', codigo_municipio: '1001058', lgpd_ativo: true }
+        setConfigOpcoes(c)
+        if (!cfg) onLgpdChange(true)
       })
       .catch(err => setError(err.message))
       .finally(() => setLoading(false))

@@ -4,7 +4,7 @@
 
 - Node.js >= 18
 - npm
-- PostgreSQL rodando (Supabase ou local)
+- SQLite (incluso via better-sqlite3)
 
 ## Dependências
 

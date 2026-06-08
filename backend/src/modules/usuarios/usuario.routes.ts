@@ -48,9 +48,9 @@ export function criarRouterUsuarios(): Router {
       const usuario = await usuarioService.criar(req.tenantId!, body)
       res.status(201).json({ data: usuario })
     } catch (err) {
-      if (err instanceof z.ZodError) { res.status(400).json({ error: 'Dados inválidos', details: err.issues }); return }
-      if (err instanceof ConflictError) { res.status(409).json({ error: err.message }); return }
-      res.status(500).json({ error: 'Erro interno' })
+      if (err instanceof z.ZodError) { res.status(400).json({ detail: 'Dados inválidos', details: err.issues }); return }
+      if (err instanceof ConflictError) { res.status(409).json({ detail: err.message }); return }
+      res.status(500).json({ detail: 'Erro interno' })
     }
   })
 
@@ -60,9 +60,9 @@ export function criarRouterUsuarios(): Router {
       const usuario = await usuarioService.alterarPapel(req.tenantId!, Number(req.params.id), body.papel)
       res.json({ data: usuario })
     } catch (err) {
-      if (err instanceof z.ZodError) { res.status(400).json({ error: 'Dados inválidos', details: err.issues }); return }
-      if (err instanceof NotFoundError) { res.status(404).json({ error: err.message }); return }
-      res.status(500).json({ error: 'Erro interno' })
+      if (err instanceof z.ZodError) { res.status(400).json({ detail: 'Dados inválidos', details: err.issues }); return }
+      if (err instanceof NotFoundError) { res.status(404).json({ detail: err.message }); return }
+      res.status(500).json({ detail: 'Erro interno' })
     }
   })
 

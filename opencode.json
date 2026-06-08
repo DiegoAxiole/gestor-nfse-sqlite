@@ -1,0 +1,10 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["AGENTS.md"],
+  "command": {
+    "init": {
+      "description": "Carrega codegraph + agentmemory, indexa/sync codegraph, recupera contexto",
+      "template": "Execute /init para preparar o ambiente:\n\n1. Use agentmemory_recall com query ampla (ex: 'gestor nfse', 'projeto', 'arquitetura') para recuperar contexto de sessões anteriores\n2. Use codegraph_codegraph_status para verificar se o codegraph já está indexado\n   - Se NÃO estiver indexado ou estiver vazio: use codegraph_codegraph_explore para indexar os símbolos principais do projeto\n   - Se já estiver indexado: use codegraph_codegraph_explore para sincronizar com o estado atual do código\n3. Leia AGENTS.md para carregar as instruções do projeto\n4. Informe o status final: codegraph indexado (quantos arquivos/nós) + quantas sessões do agentmemory foram carregadas\n\nREGRAS ABSOLUTAS:\n- NÃO use Glob, Grep ou Read durante este comando\n- Use APENAS agentmemory_recall e codegraph\n- Se codegraph não tiver info suficiente, use codegraph_codegraph_search ou codegraph_codegraph_node, nunca Glob/Read"
+    }
+  }
+}

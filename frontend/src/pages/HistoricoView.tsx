@@ -158,15 +158,16 @@ export default function HistoricoView() {
           {/* Select filter Status */}
           <div className="flex items-center gap-1.5">
             <span className="text-[10px] text-slate-500 font-bold uppercase">Status:</span>
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="bg-slate-950 border border-slate-850 text-slate-300 text-xs rounded-lg p-2 font-bold cursor-pointer focus:outline-hidden"
-            >
-              <option value="TODOS">Qualquer Status</option>
-              <option value="SUCESSO">Sucesso (Autorizado)</option>
-              <option value="ERRO">Erro (Rejeição)</option>
-            </select>
+                                          <select
+                                              value={filterStatus}
+                                              onChange={(e) => setFilterStatus(e.target.value)}
+                                              className="bg-slate-950 border border-slate-850 text-slate-300 text-xs rounded-lg p-2 font-bold cursor-pointer focus:outline-hidden"
+                                            >
+                                              <option value="TODOS">Qualquer Status</option>
+                                              <option value="SUCESSO">Sucesso (Autorizado)</option>
+                                              <option value="NENHUM_DOCUMENTO">0 Documentos</option>
+                                              <option value="ERRO">Erro (Rejeição)</option>
+                                            </select>
           </div>
         </div>
 
@@ -236,13 +237,13 @@ export default function HistoricoView() {
                       </td>
                       <td className="p-3 text-center">
                         <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-tight border inline-block ${
-                          ultimoStatus === "SUCESSO" 
+                          ultimoStatus === "SUCESSO" || ultimoStatus === "NENHUM_DOCUMENTO"
                             ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" 
                             : ultimoStatus === "ERRO" || ultimoStatus === "REJEIÇÃO"
                             ? "bg-rose-500/10 text-rose-400 border-rose-500/20"
                             : "bg-slate-950 text-slate-500 border-slate-850"
                         }`}>
-                          {ultimoStatus}
+                          {ultimoStatus === 'NENHUM_DOCUMENTO' ? 'SUCESSO (0 DOCS)' : ultimoStatus}
                         </span>
                       </td>
                       <td className="p-3 text-center">
@@ -327,6 +328,11 @@ export default function HistoricoView() {
                                             <span className="text-emerald-400 font-bold flex items-center gap-1 text-[10px]">
                                               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse" />
                                               SUCESSO
+                                            </span>
+                                          ) : op.status === "NENHUM_DOCUMENTO" ? (
+                                            <span className="text-slate-400 font-bold flex items-center gap-1 text-[10px]">
+                                              <span className="w-1.5 h-1.5 rounded-full bg-slate-400 inline-block" />
+                                              0 DOCS
                                             </span>
                                           ) : (
                                             <span className="text-rose-450 font-bold flex items-center gap-1 text-[10px]" title={op.xml_erro}>

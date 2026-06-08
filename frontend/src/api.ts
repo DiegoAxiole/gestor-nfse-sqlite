@@ -240,7 +240,7 @@ export async function fetchOperacoes(): Promise<Operacao[]> {
 
 export async function fetchLgpdAtivo(): Promise<boolean> {
   const cfg = await requestJson<any>('/config')
-  return cfg.lgpd_ativo ?? false
+  return cfg.lgpd_ativo ?? true
 }
 
 export async function fetchConfigOpcoes(): Promise<ConfigOpcoes> {

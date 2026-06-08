@@ -18,7 +18,7 @@ export const distribuicaoRepository = {
       .where(and(
         eq(operacoes.prestador_cnpj, cnpj),
         eq(operacoes.tenant_id, tenantId),
-        sql`${operacoes.status} IN ('DOCUMENTOS_LOCALIZADOS', 'SUCESSO', '')`,
+	        sql`${operacoes.status} IN ('DOCUMENTOS_LOCALIZADOS', 'SUCESSO', 'NENHUM_DOCUMENTO', '')`,
       ))
       .orderBy(desc(operacoes.id))
       .limit(1)
@@ -59,7 +59,7 @@ export const distribuicaoRepository = {
     if (data.mensagem !== undefined) setData.mensagem = data.mensagem
     if (data.resultado_json !== undefined) setData.resultado_json = data.resultado_json
     if (data.erro_texto !== undefined) setData.erro_texto = data.erro_texto
-    setData.atualizado_em = new Date()
+	    setData.atualizado_em = new Date().toISOString()
     await db.update(backgroundTasks).set(setData).where(eq(backgroundTasks.id, taskId))
   },
 

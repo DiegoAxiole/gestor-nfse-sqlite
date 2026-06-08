@@ -1,89 +1,74 @@
 # AGENTS.md — Gestor NFSe
 
-NFSe manager: **Express (Node.js) backend** + **React 19 frontend**. Self-managed auth (bcrypt + JWT). Drizzle ORM + PostgreSQL.
+Express + React 19 + Drizzle ORM + SQLite (better-sqlite3). JWT auth. Multi-tenant.
 
-**⚠️ Stale frontend routes:** `frontend/src/api.ts` references `/automacao/*` (agendar, agendamentos, logs), but `backend/src/modules/automacao/` is **empty** and no routes are registered in `app.ts`. These API calls will **404**.
+## Init (`/init`)
 
-## Quick links
+`/init` carrega **codegraph + agentmemory**. Só depois leia este arquivo.
 
-| File | Purpose |
-|------|---------|
-| `backend/src/app.ts` | Express app wiring, route registration, static file serving |
-| `backend/src/index.ts` | Entrypoint, port 8001, `127.0.0.1` |
-| `backend/src/config.ts` | Env vars: `DATABASE_URL`, `JWT_SECRET`, `AMBIENTE`, `CODIGO_MUNICIPIO` |
-| `backend/src/db/schema.ts` | 12 Drizzle tables |
-| `backend/vendor/consulta-nfse-api-node/` | SEFAZ client lib (vendored, not npm) |
-| `frontend/vite.config.ts` | Port 3000, proxy `/api` → `:8001`, `@/` alias → `frontend/` root, **`outDir` → `../backend/public/`** |
-| `frontend/src/api.ts` | All API calls + adapter functions |
-| `frontend/src/services/xml-parser.ts` | Client-side NFSe XML parsing (DOMParser + regex fallback) |
+## Priority (OBRIGATÓRIO)
+
+1. **`agentmemory_recall`** — contexto de sessões anteriores
+2. **`codegraph_explore`** — arquitetura, símbolos, fluxo
+3. **`codegraph_search` / `codegraph_impact`** — buscar/refatorar
+4. **Glob / Grep / Read** — **ÚLTIMO RECURSO.** Só se codegraph não deu conta.
+
+**REGRA ABSOLUTA:** codegraph resolve 95%+ dos casos. Glob/Read são EXCEÇÃO — se você pensar em usar Glob ou Read, primeiro prove que codegraph não resolve.
+
+**PROIBIDO usar Glob, Grep ou Read sem antes ter tentado codegraph_explore e constatado que não resolveu.** Se você usou Glob/Read sem codegraph primeiro, está ERRADO. ponto final.
+
+## Env (`backend/.env`)
+Obrigatórios: `DATABASE_URL`, `JWT_SECRET`, `AMBIENTE` (Homologacao|Producao), `CODIGO_MUNICIPIO`. Opcionais: `ASAAS_API_KEY`, `ASAAS_WEBHOOK_SECRET`, `ASAAS_SANDBOX`. Arquivo `config.toml` é legado — a config real vem de `.env` via `config.ts:carregarConfig()`.
 
 ## Build order
-
-1. `danfse-pdf-generator` (local dep `file:../../danfse-pdf-generator`): `cd danfse-pdf-generator && npm run build`
-2. Backend: `cd backend && npm install && npm run build`
-3. Frontend: `cd frontend && npm install && npm run build` — outputs to `../backend/public/`
-4. DB: `npm run db:push` then `npm run seed` (creates `admin@gestornfse.com` / `admin123`, 30-day trial)
+1. `../danfse-pdf-generator`: `npm run build` (dependência local `file:`)
+2. `backend`: `npm install && npm run build` (tsc + xcopy migrations → dist)
+3. `frontend`: `npm install && npm run build` (vite → `../backend/public/`)
 
 ## Commands
 
-| Context | Command | Notes |
-|---------|---------|-------|
-| Backend dev | `npm run dev` | `tsx watch src/index.ts`, hot-reload |
-| Backend build | `npm run build` | `tsc`, outputs to `backend/dist/` |
-| Backend prod | `npm run start` | `node dist/index.js` |
-| Backend typecheck | `npm run typecheck` | `tsc --noEmit` |
-| Backend test | `npm run test` | vitest (71 tests, 9 suites) |
+| Context | Cmd | Notes |
+|---------|-----|-------|
+| BE dev | `npm run dev` | tsx watch, hot-reload, `127.0.0.1:8001` |
+| BE build | `npm run build` | tsc + `xcopy` migrations |
+| BE prod | `npm run start` | `node dist/index.js` |
+| BE typecheck | `npm run typecheck` | `tsc --noEmit` |
+| BE test | `npm run test` | vitest, `fileParallelism:false`, roda `createApp()` (inclui migrate+seed) |
 | DB generate | `npm run db:generate` | drizzle-kit generate |
-| DB push | `npm run db:push` | sync schema directly to DB |
-| DB migrate | `npm run db:migrate` | run pending migrations |
-| Seed | `npm run seed` | **must run after db:push** |
-| Frontend dev | `npm run dev` | vite, port 3000 |
-| Frontend typecheck | `npm run lint` | `tsc --noEmit` |
-| Both dev servers | `dev.bat` (cmd) or `dev.ps1` (PowerShell) | kills old processes on ports 8001/3000 |
+| DB push | `npm run db:push` | sync schema diretamente (dev) |
+| DB migrate | `npm run db:migrate` | roda migrations de `src/db/migrations/` |
+| Seed | `npm run seed` | reseta + recria admin + 3 planLimits |
+| FE dev | `npm run dev` | vite `:3000`, proxy `/api` → `:8001` |
+| FE typecheck | `npm run lint` | `tsc --noEmit` (não há ESLint/Prettier no repo) |
+| FE test | `npm run test` | vitest + jsdom + testing-library |
+| Both | `dev.bat` / `dev.ps1` | kill ports 8001/3000 |
+| Release | `git tag v* && git push origin v*` | CI faz zip com node portátil |
 
-## API
+## Arquitetura
 
-All routes under `/api/v1/`. JWT required except `/auth/*` and `/health`.
-Subscription middleware returns **402** if expired (blocks all routes except `/auth`, `/subscription`).
+- **Rotas API:** `/api/v1/*` — auth + subscription middleware globais (exceto `/auth`, `/subscription`, `/webhooks`)
+- **Auth middleware** (`shared/auth.middleware.ts`): seta `req.tenantId`, `req.usuarioId`, `req.papel`
+- **Subscription middleware** (`subscription/subscription.middleware.ts`): bloqueia com 402 se expirado
+- **4-layer** só em `prestadores/` (routes → controller → service → repository); demais módulos mais planos
+- **`backend/` é `"type": "module"`** — imports precisam de `.js` extension (ex: `import './config.js'`)
+- **Frontend `@/` alias** → root do frontend (`"@/*": ["./*"]`)
+- **Error hierarchy:** `AppError` → `NotFoundError` (404), `ValidationError` (422), `ConflictError` (409); handler em `shared/error-handler.ts`
 
-| Module | Routes | Auth |
-|--------|--------|------|
-| **Health** | `GET /health` | None |
-| **Auth** | `POST /auth/login`, `POST /auth/cadastrar` | None |
-| **Prestadores** | `GET/POST /prestadores` (POST: multipart c/ PFX), `GET/PUT/DELETE /.../:cnpj` | JWT |
-| **Config** | `GET/PUT /config` | JWT |
-| **Tenant** | `GET/PUT /tenant` | JWT |
-| **Usuários** | `GET/POST /usuarios`, `PATCH /.../:id/papel`, `DELETE /.../:id` | JWT (admin-only for PATCH/DELETE) |
-| **Distribuição** | `POST /distribuicao/consultar` → returns `task_id` | JWT |
-| **Tasks** | `GET /tasks/{task_id}` (poll background task) | JWT |
-| **Documentos** | `GET /documentos`, `GET .../{chave}/xml\|pdf`, `GET .../download-zip` | JWT |
-| **Subscription** | `GET /subscription`, `POST /.../cancelar`, `POST /.../upgrade` | JWT |
-| **Operações** | `GET /operacoes` | JWT |
-| **Admin** | `PATCH /admin/tenants/:id/limits` | JWT + adminMiddleware |
-| **Webhooks** | `POST /webhooks/asaas` | **No auth** (webhook secret validation in billing.config) |
+## Banco
 
-## Key conventions
+- **SQLite** via `better-sqlite3`, WAL mode + foreign_keys ON (`db/db.ts`)
+- **Todas as tabelas escopadas por `tenant_id`** exceto `tenants` e `planLimits`
+- **`createApp()`** já roda `migrate` + auto-seed se DB vazio — não precisa rodar seed separadamente em dev
+- **planLimits:** trial (5 prestadores, 100 docs/mês), basico (2, 100), profissional (10, 2000)
 
-- **Module pattern:** factory functions (`criarRouter*`) called from `app.ts`, receive config values where needed
-- **4-layer pattern** in `prestadores/` only: routes → controller → service → repository. Other modules are flatter (routes may call repository/service directly)
-- **Zod v4** request validation in route/controller files
-- **Custom error hierarchy:** `AppError` → `NotFoundError` (404), `ValidationError` (422), `ConflictError` (409)
-- **Auth:** `authMiddleware` sets `req.tenantId`, `req.usuarioId`, `req.papel`; `adminMiddleware` checks `papel === 'admin'`
-- **CNPJ** digits-only (14 chars), chave de acesso 44 or 50 digits — `validators.ts`
-- **Multer** memory storage for PFX certificate uploads (`multipart/form-data`, not JSON)
-- **PFX certificates** stored as `bytea` in `prestadores` table
-- **Multi-tenant:** all tables scoped by `tenant_id`
-- **LGPD masking utils:** `formatCnpj`, `maskRazao`, `maskChave`, `maskEmail` in `frontend/src/utils.ts`
-- **EOL:** LF for `.ts/.tsx/.json/.yml/.md`, CRLF for `.bat/.ps1/.cmd` (via `.gitattributes`)
-- **HTTP logging** to `data/http.log` (sensitive fields redacted before writing)
-- `scripts/`, `start.bat`, `install.bat` are CI-generated, not in repo
-- `data/` is gitignored, created at runtime for logs
+## Gotchas
 
-## Known issues & gotchas
-
-- **DANFSe PDF:** generated on-demand via `danfse-pdf-generator` (`parseNfseXml` + `generateDanfsePdf`). No `pdf_blob` storage. Backend reads `?lgpd=true` query param and passes `lgpdAtivo` to the generator. `pdf_blob` column still exists in schema but is **unused**.
-- **pdfmake warning fix:** `setUrlAccessPolicy(() => true)` and `setLocalAccessPolicy(() => true)` must be **callback functions**, not strings. Don't use `() => false` (breaks local font loading).
-- **Frontend LGPD flow:** `lgpdAtivo` comes from `ProtectedLayout` state, fetched from `GET /config`, passed via OutletContext to child views.
-- **Query URL:** no PDF generation — just `https://www.nfse.gov.br/ConsultaPublica/?tpc=1&chave=<chave>`.
-- **Asaas sandbox:** `billing/billing.config.ts` uses `baseUrl` and `apiKey` from env (sandbox/production switch).
-- **plan-limits admin:** `PATCH /api/v1/admin/tenants/:id/limits` allows overriding plan limits per tenant (`prestadores_max`, `documentos_mes_max`, `usuarios_max`, `lote_zip`).
+- **`/automacao/*`** em `frontend/src/api.ts` → 404 (módulo backend `src/modules/automacao/` vazio)
+- **pdfmake:** `setUrlAccessPolicy(() => true)` — precisa ser callback, não string; `() => false` quebra fonts locais
+- **DANFSe PDF:** sob demanda via `danfse-pdf-generator` (sibling `file:../../danfse-pdf-generator`); coluna `pdf_blob` não usada
+- **CI** usa `windows-latest` + `pwsh` + Node 24; dev usa Node 22
+- **Static fallback:** `backend/public/` → `backend/dist/` (se não achar public, serve dist)
+- **Asaas:** sandbox por default; `ASAAS_SANDBOX=false` para produção
+- **Upload de certificados:** `multer` com `memoryStorage` (não salva em disco)
+- **HTTP logging** em `data/http.log` (headers sensíveis redactados; implementação inline em `app.ts`)
+- **`db:push`** vs **`db:migrate`**: push sync schema diretamente (dev), migrate roda migration files versionados

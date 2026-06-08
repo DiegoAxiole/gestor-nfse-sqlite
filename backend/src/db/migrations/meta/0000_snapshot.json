@@ -1,36 +1,39 @@
 {
-  "id": "78a5ee52-db9f-4927-8e76-57a4c9848ffd",
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "886f195c-2d79-449c-8af9-76931ceca1b2",
   "prevId": "00000000-0000-0000-0000-000000000000",
-  "version": "7",
-  "dialect": "postgresql",
   "tables": {
-    "public.agendamentos": {
+    "agendamentos": {
       "name": "agendamentos",
-      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": true
         },
         "tenant_id": {
           "name": "tenant_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "prestador_cnpj": {
           "name": "prestador_cnpj",
-          "type": "varchar(14)",
+          "type": "text(14)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "tipo": {
           "name": "tipo",
-          "type": "varchar(30)",
+          "type": "text(30)",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false,
           "default": "'consulta_distribuicao'"
         },
         "intervalo_minutos": {
@@ -38,33 +41,37 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false,
           "default": 60
         },
         "ativo": {
           "name": "ativo",
-          "type": "boolean",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false,
           "default": true
         },
         "ultima_execucao": {
           "name": "ultima_execucao",
-          "type": "timestamp",
+          "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "proxima_execucao": {
           "name": "proxima_execucao",
-          "type": "timestamp",
+          "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "now()"
+          "autoincrement": false
         }
       },
       "indexes": {},
@@ -85,50 +92,52 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "checkConstraints": {}
     },
-    "public.asaas_webhooks": {
+    "asaas_webhooks": {
       "name": "asaas_webhooks",
-      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": true
         },
         "event": {
           "name": "event",
-          "type": "varchar(100)",
+          "type": "text(100)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "asaas_id": {
           "name": "asaas_id",
-          "type": "varchar(100)",
+          "type": "text(100)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "subscription_id": {
           "name": "subscription_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "raw_body": {
           "name": "raw_body",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "processed_at": {
           "name": "processed_at",
-          "type": "timestamp",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "now()"
+          "autoincrement": false
         }
       },
       "indexes": {},
@@ -149,37 +158,38 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "checkConstraints": {}
     },
-    "public.automacao_logs": {
+    "automacao_logs": {
       "name": "automacao_logs",
-      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": true
         },
         "tenant_id": {
           "name": "tenant_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "prestador_cnpj": {
           "name": "prestador_cnpj",
-          "type": "varchar(14)",
+          "type": "text(14)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "tipo": {
           "name": "tipo",
-          "type": "varchar(30)",
+          "type": "text(30)",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false,
           "default": "''"
         },
         "mensagem": {
@@ -187,14 +197,15 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false,
           "default": "''"
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "now()"
+          "autoincrement": false
         }
       },
       "indexes": {},
@@ -215,50 +226,53 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "checkConstraints": {}
     },
-    "public.background_tasks": {
+    "background_tasks": {
       "name": "background_tasks",
-      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(36)",
+          "type": "text(36)",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "tipo": {
           "name": "tipo",
-          "type": "varchar(50)",
+          "type": "text(50)",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false,
           "default": "''"
         },
         "chave_acesso": {
           "name": "chave_acesso",
-          "type": "varchar(44)",
+          "type": "text(50)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "cnpj": {
           "name": "cnpj",
-          "type": "varchar(14)",
+          "type": "text(14)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "status": {
           "name": "status",
-          "type": "varchar(20)",
+          "type": "text(20)",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false,
           "default": "'pending'"
         },
         "progresso": {
@@ -266,6 +280,7 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false,
           "default": 0
         },
         "mensagem": {
@@ -273,33 +288,36 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false,
           "default": "''"
         },
         "resultado_json": {
           "name": "resultado_json",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "erro_texto": {
           "name": "erro_texto",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "criado_em": {
           "name": "criado_em",
-          "type": "timestamp",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "now()"
+          "autoincrement": false
         },
         "atualizado_em": {
           "name": "atualizado_em",
-          "type": "timestamp",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "now()"
+          "autoincrement": false
         }
       },
       "indexes": {},
@@ -320,31 +338,31 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "checkConstraints": {}
     },
-    "public.configuracoes": {
+    "configuracoes": {
       "name": "configuracoes",
-      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": true
         },
         "tenant_id": {
           "name": "tenant_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "ambiente": {
           "name": "ambiente",
-          "type": "varchar(20)",
+          "type": "text(20)",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false,
           "default": "'Homologacao'"
         },
         "codigo_municipio": {
@@ -352,38 +370,50 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false,
           "default": 1001058
         },
         "lgpd_ativo": {
           "name": "lgpd_ativo",
-          "type": "boolean",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false,
           "default": false
         },
         "cnpj": {
           "name": "cnpj",
-          "type": "varchar(14)",
+          "type": "text(14)",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false,
           "default": "''"
         },
         "razao_social": {
           "name": "razao_social",
-          "type": "varchar(255)",
+          "type": "text(255)",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false,
           "default": "''"
         },
         "atualizada_em": {
           "name": "atualizada_em",
-          "type": "timestamp",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
-          "default": "now()"
+          "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "configuracoes_tenant_id_unique": {
+          "name": "configuracoes_tenant_id_unique",
+          "columns": [
+            "tenant_id"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {
         "configuracoes_tenant_id_tenants_id_fk": {
           "name": "configuracoes_tenant_id_tenants_id_fk",
@@ -400,58 +430,53 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "configuracoes_tenant_id_unique": {
-          "name": "configuracoes_tenant_id_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "tenant_id"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {},
+      "checkConstraints": {}
     },
-    "public.documentos": {
+    "documentos": {
       "name": "documentos",
-      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": true
         },
         "tenant_id": {
           "name": "tenant_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "chave_acesso": {
           "name": "chave_acesso",
-          "type": "varchar(44)",
+          "type": "text(50)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "prestador_cnpj": {
           "name": "prestador_cnpj",
-          "type": "varchar(14)",
+          "type": "text(14)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "operacao_id": {
           "name": "operacao_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "nsu": {
           "name": "nsu",
-          "type": "varchar(20)",
+          "type": "text(20)",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false,
           "default": "''"
         },
         "xml_nfse": {
@@ -459,35 +484,47 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false,
           "default": "''"
         },
         "data_emissao": {
           "name": "data_emissao",
-          "type": "varchar(20)",
+          "type": "text(20)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "emissao_dh": {
           "name": "emissao_dh",
-          "type": "varchar(30)",
+          "type": "text(30)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "pdf_blob": {
           "name": "pdf_blob",
-          "type": "bytea",
+          "type": "blob",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "now()"
+          "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "documentos_chave_acesso_unique": {
+          "name": "documentos_chave_acesso_unique",
+          "columns": [
+            "chave_acesso"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {
         "documentos_tenant_id_tenants_id_fk": {
           "name": "documentos_tenant_id_tenants_id_fk",
@@ -504,66 +541,62 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "documentos_chave_acesso_unique": {
-          "name": "documentos_chave_acesso_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "chave_acesso"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {},
+      "checkConstraints": {}
     },
-    "public.operacoes": {
+    "operacoes": {
       "name": "operacoes",
-      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": true
         },
         "tenant_id": {
           "name": "tenant_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "prestador_cnpj": {
           "name": "prestador_cnpj",
-          "type": "varchar(14)",
+          "type": "text(14)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "tipo": {
           "name": "tipo",
-          "type": "varchar(20)",
+          "type": "text(20)",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false,
           "default": "''"
         },
         "nsu_consultado": {
           "name": "nsu_consultado",
-          "type": "varchar(20)",
+          "type": "text(20)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "ultimo_nsu": {
           "name": "ultimo_nsu",
-          "type": "varchar(20)",
+          "type": "text(20)",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false,
           "default": "''"
         },
         "status": {
           "name": "status",
-          "type": "varchar(30)",
+          "type": "text(30)",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false,
           "default": "''"
         },
         "qtd_documentos": {
@@ -571,32 +604,36 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false,
           "default": 0
         },
         "xml_request": {
           "name": "xml_request",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "xml_response": {
           "name": "xml_response",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "xml_erro": {
           "name": "xml_erro",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "now()"
+          "autoincrement": false
         }
       },
       "indexes": {},
@@ -617,31 +654,31 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "checkConstraints": {}
     },
-    "public.plan_limits": {
+    "plan_limits": {
       "name": "plan_limits",
-      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": true
         },
         "plano": {
           "name": "plano",
-          "type": "varchar(50)",
+          "type": "text(50)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "prestadores_max": {
           "name": "prestadores_max",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false,
           "default": 1
         },
         "documentos_mes_max": {
@@ -649,6 +686,7 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false,
           "default": 50
         },
         "usuarios_max": {
@@ -656,107 +694,107 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false,
           "default": 2
-        },
-        "danfse": {
-          "name": "danfse",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": true
         },
         "lote_zip": {
           "name": "lote_zip",
-          "type": "boolean",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false,
           "default": false
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "now()"
+          "autoincrement": false
         }
       },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
+      "indexes": {
         "plan_limits_plano_unique": {
           "name": "plan_limits_plano_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "plano"
-          ]
+          ],
+          "isUnique": true
         }
       },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
     },
-    "public.prestadores": {
+    "prestadores": {
       "name": "prestadores",
-      "schema": "",
       "columns": {
         "cnpj": {
           "name": "cnpj",
-          "type": "varchar(14)",
+          "type": "text(14)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "razao_social": {
           "name": "razao_social",
-          "type": "varchar(255)",
+          "type": "text(255)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "ambiente": {
           "name": "ambiente",
-          "type": "varchar(20)",
+          "type": "text(20)",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false,
           "default": "'Homologacao'"
         },
         "certificado_pfx": {
           "name": "certificado_pfx",
-          "type": "bytea",
+          "type": "blob",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "certificado_senha": {
           "name": "certificado_senha",
-          "type": "varchar(255)",
+          "type": "text(255)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "certificado_validade": {
           "name": "certificado_validade",
-          "type": "varchar(20)",
+          "type": "text(20)",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false,
           "default": "''"
         },
         "certificado_nome": {
           "name": "certificado_nome",
-          "type": "varchar(255)",
+          "type": "text(255)",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false,
           "default": "''"
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "now()"
+          "autoincrement": false
         }
       },
       "indexes": {},
@@ -777,126 +815,151 @@
       },
       "compositePrimaryKeys": {
         "prestadores_tenant_id_cnpj_pk": {
-          "name": "prestadores_tenant_id_cnpj_pk",
           "columns": [
             "tenant_id",
             "cnpj"
-          ]
+          ],
+          "name": "prestadores_tenant_id_cnpj_pk"
         }
       },
       "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "checkConstraints": {}
     },
-    "public.subscriptions": {
+    "subscriptions": {
       "name": "subscriptions",
-      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": true
         },
         "tenant_id": {
           "name": "tenant_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "uuid": {
           "name": "uuid",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "gen_random_uuid()"
+          "autoincrement": false
         },
         "plano": {
           "name": "plano",
-          "type": "varchar(50)",
+          "type": "text(50)",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false,
           "default": "'trial'"
         },
         "status": {
           "name": "status",
-          "type": "varchar(50)",
+          "type": "text(50)",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false,
           "default": "'trialing'"
         },
         "trial_fim": {
           "name": "trial_fim",
-          "type": "timestamp",
+          "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "periodo_fim": {
           "name": "periodo_fim",
-          "type": "timestamp",
+          "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "gateway_customer_id": {
           "name": "gateway_customer_id",
-          "type": "varchar(100)",
+          "type": "text(100)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "gateway_subscription_id": {
           "name": "gateway_subscription_id",
-          "type": "varchar(100)",
+          "type": "text(100)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "cancelado_em": {
           "name": "cancelado_em",
-          "type": "timestamp",
+          "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "now()"
+          "autoincrement": false
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "timestamp",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "now()"
+          "autoincrement": false
         },
         "asaas_customer_id": {
           "name": "asaas_customer_id",
-          "type": "varchar(100)",
+          "type": "text(100)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "asaas_subscription_id": {
           "name": "asaas_subscription_id",
-          "type": "varchar(100)",
+          "type": "text(100)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "documentos_este_mes": {
           "name": "documentos_este_mes",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false,
           "default": 0
         },
         "documentos_mes_ref": {
           "name": "documentos_mes_ref",
-          "type": "varchar(7)",
+          "type": "text(7)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "subscriptions_tenant_id_unique": {
+          "name": "subscriptions_tenant_id_unique",
+          "columns": [
+            "tenant_id"
+          ],
+          "isUnique": true
+        },
+        "subscriptions_uuid_unique": {
+          "name": "subscriptions_uuid_unique",
+          "columns": [
+            "uuid"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {
         "subscriptions_tenant_id_tenants_id_fk": {
           "name": "subscriptions_tenant_id_tenants_id_fk",
@@ -913,87 +976,78 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "subscriptions_tenant_id_unique": {
-          "name": "subscriptions_tenant_id_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "tenant_id"
-          ]
-        },
-        "subscriptions_uuid_unique": {
-          "name": "subscriptions_uuid_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "uuid"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {},
+      "checkConstraints": {}
     },
-    "public.tenant_overrides": {
+    "tenant_overrides": {
       "name": "tenant_overrides",
-      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": true
         },
         "tenant_id": {
           "name": "tenant_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "prestadores_max": {
           "name": "prestadores_max",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "documentos_mes_max": {
           "name": "documentos_mes_max",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "usuarios_max": {
           "name": "usuarios_max",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
-        },
-        "danfse": {
-          "name": "danfse",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "lote_zip": {
           "name": "lote_zip",
-          "type": "boolean",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "timestamp",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "now()"
+          "autoincrement": false
         },
         "updated_by": {
           "name": "updated_by",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "tenant_overrides_tenant_id_unique": {
+          "name": "tenant_overrides_tenant_id_unique",
+          "columns": [
+            "tenant_id"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {
         "tenant_overrides_tenant_id_tenants_id_fk": {
           "name": "tenant_overrides_tenant_id_tenants_id_fk",
@@ -1023,69 +1077,72 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "tenant_overrides_tenant_id_unique": {
-          "name": "tenant_overrides_tenant_id_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "tenant_id"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {},
+      "checkConstraints": {}
     },
-    "public.tenant_usuarios": {
+    "tenant_usuarios": {
       "name": "tenant_usuarios",
-      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": true
         },
         "tenant_id": {
           "name": "tenant_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "email": {
           "name": "email",
-          "type": "varchar(255)",
+          "type": "text(255)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "senha_hash": {
           "name": "senha_hash",
-          "type": "varchar(255)",
+          "type": "text(255)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "nome": {
           "name": "nome",
-          "type": "varchar(255)",
+          "type": "text(255)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "papel": {
           "name": "papel",
-          "type": "varchar(20)",
+          "type": "text(20)",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false,
           "default": "'operador'"
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "now()"
+          "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "tenant_usuarios_email_unique": {
+          "name": "tenant_usuarios_email_unique",
+          "columns": [
+            "email"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {
         "tenant_usuarios_tenant_id_tenants_id_fk": {
           "name": "tenant_usuarios_tenant_id_tenants_id_fk",
@@ -1102,190 +1159,194 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "tenant_usuarios_email_unique": {
-          "name": "tenant_usuarios_email_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {},
+      "checkConstraints": {}
     },
-    "public.tenants": {
+    "tenants": {
       "name": "tenants",
-      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": true
         },
         "uuid": {
           "name": "uuid",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "gen_random_uuid()"
+          "autoincrement": false
         },
         "tipo": {
           "name": "tipo",
-          "type": "varchar(2)",
+          "type": "text(2)",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false,
           "default": "'pj'"
         },
         "documento": {
           "name": "documento",
-          "type": "varchar(20)",
+          "type": "text(20)",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false,
           "default": "''"
         },
         "nome": {
           "name": "nome",
-          "type": "varchar(255)",
+          "type": "text(255)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "nome_fantasia": {
           "name": "nome_fantasia",
-          "type": "varchar(255)",
+          "type": "text(255)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "inscricao_estadual": {
           "name": "inscricao_estadual",
-          "type": "varchar(20)",
+          "type": "text(20)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "email_contato": {
           "name": "email_contato",
-          "type": "varchar(255)",
+          "type": "text(255)",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false,
           "default": "''"
         },
         "telefone_celular": {
           "name": "telefone_celular",
-          "type": "varchar(20)",
+          "type": "text(20)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "whatsapp": {
           "name": "whatsapp",
-          "type": "boolean",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false,
           "default": false
         },
         "telefone_fixo": {
           "name": "telefone_fixo",
-          "type": "varchar(20)",
+          "type": "text(20)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "cep": {
           "name": "cep",
-          "type": "varchar(8)",
+          "type": "text(8)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "logradouro": {
           "name": "logradouro",
-          "type": "varchar(255)",
+          "type": "text(255)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "numero": {
           "name": "numero",
-          "type": "varchar(20)",
+          "type": "text(20)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "complemento": {
           "name": "complemento",
-          "type": "varchar(100)",
+          "type": "text(100)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "bairro": {
           "name": "bairro",
-          "type": "varchar(100)",
+          "type": "text(100)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "cidade": {
           "name": "cidade",
-          "type": "varchar(100)",
+          "type": "text(100)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "uf": {
           "name": "uf",
-          "type": "varchar(2)",
+          "type": "text(2)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "now()"
+          "autoincrement": false
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "timestamp",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "default": "now()"
+          "autoincrement": false
         },
         "updated_by": {
           "name": "updated_by",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         }
       },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
+      "indexes": {
         "tenants_uuid_unique": {
           "name": "tenants_uuid_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "uuid"
-          ]
+          ],
+          "isUnique": true
         },
         "tenants_documento_unique": {
           "name": "tenants_documento_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "documento"
-          ]
+          ],
+          "isUnique": true
         }
       },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
     }
   },
-  "enums": {},
-  "schemas": {},
-  "sequences": {},
-  "roles": {},
-  "policies": {},
   "views": {},
+  "enums": {},
   "_meta": {
-    "columns": {},
     "schemas": {},
-    "tables": {}
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
   }
 }

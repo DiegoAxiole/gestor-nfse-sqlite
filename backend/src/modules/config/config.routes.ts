@@ -26,7 +26,7 @@ export function criarRouterConfig(): Router {
           razao_social: '',
           ambiente: 'Homologacao',
           codigo_municipio: '1001058',
-          lgpd_ativo: false,
+          lgpd_ativo: true,
         })
         return
       }

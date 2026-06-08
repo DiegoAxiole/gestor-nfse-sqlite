@@ -4,7 +4,7 @@
 
 Gestão de Notas Fiscais de Serviço Eletrônica — frontend React + backend Express (Node.js) com integração SEFAZ.
 
-Banco PostgreSQL via Drizzle ORM (Supabase).
+Banco SQLite via Drizzle ORM (better-sqlite3).
 
 ---
 
@@ -13,7 +13,7 @@ Banco PostgreSQL via Drizzle ORM (Supabase).
 ### Pré-requisitos
 
 - [Node.js 22+](https://nodejs.org)
-- PostgreSQL (ou Supabase)
+- SQLite (incluso via better-sqlite3)
 - Git
 
 ### Setup
@@ -28,7 +28,7 @@ cd ../frontend && npm install
 Configure as variáveis de ambiente no `backend/.env`:
 
 ```env
-DATABASE_URL=postgresql://usuario:senha@host:5432/gestor_nfse
+DATABASE_URL=./data/gestor_nfse.sqlite
 JWT_SECRET=seu-segredo-aqui
 AMBIENTE=Homologacao
 CODIGO_MUNICIPIO=1001058
